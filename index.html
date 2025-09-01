@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functional Gym Card Generator</title>
+
+    <!-- Google Font import has been removed. -->
+
+    <style>
+        /* ADDED: @font-face rule to load fonts from the local 'fonts' folder */
+        @font-face {
+            font-family: 'Oswald';
+            src: url('./fonts/Oswald-Regular.ttf') format('truetype');
+            font-weight: 400; /* Corresponds to 'normal' weight */
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Oswald';
+            src: url('./fonts/Oswald-Bold.ttf') format('truetype');
+            font-weight: 700; /* Corresponds to 'bold' weight */
+            font-style: normal;
+        }
+
+        /* Basic styling for readability */
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .form-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+        h2 { border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; }
+        .input-group { margin-bottom: 15px; }
+        .strength-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="file"] { padding: 5px; }
+        .btn {
+            display: block; width: 100%; padding: 12px; border: none;
+            border-radius: 5px; font-size: 16px; font-weight: bold;
+            cursor: pointer; transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-generate { background-color: #007bff; color: white; margin-top: 20px; }
+        .btn-generate:hover { background-color: #0056b3; }
+        .btn-download { background-color: #28a745; color: white; margin-top: 15px; display: none; }
+        .btn-download:hover { background-color: #1e7e34; }
+        .btn:active { transform: scale(0.98); }
+        .output-section { text-align: center; width: 100%; max-width: 452px; }
+        #gymCard {
+            border: 2px solid #ddd;
+            background-color: #f9f9f9;
+            width: 100%;
+            max-width: 452px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- USER INPUT FORM SECTION -->
+        <div class="form-section">
+            <h1>Gym Card Generator</h1>
+            <h3>Personal Details</h3>
+            <div class="input-group"><label for="name">Surname</label><input type="text" id="name" placeholder="Enter your surname" required></div>
+            <div class="input-group"><label for="gender">Gender</label><select id="gender"><option value="male">Male</option><option value="female">Female</option></select></div>
+            <div class="input-group"><label for="bodyweight">Bodyweight (kg)</label><input type="number" id="bodyweight" placeholder="e.g., 80"></div>
+            <div class="input-group"><label for="portrait">Portrait Image</label><input type="file" id="portrait" accept="image/*" required></div>
+
+            <h2>Exercise Scores</h2>
+            <h3>Pace</h3>
+            <div class="input-group"><label for="dash">50m dash (seconds)</label><input type="number" id="dash" placeholder="Lower is better"></div>
+            <div class="input-group"><label for="tTest">T-Test (seconds)</label><input type="number" id="tTest" placeholder="Lower is better"></div>
+            <h3>Strength</h3>
+            <div class="input-group">
+                <div class="strength-group">
+                    <div><label for="benchRaw">1RM Bench Press (kg)</label><input type="number" id="benchRaw" placeholder="Raw weight"></div>
+                    <div><label for="legPressRaw">1RM Leg Press (kg)</label><input type="number" id="legPressRaw" placeholder="Raw weight"></div>
+                </div>
+            </div>
+            <h3>Power</h3>
+            <div class="input-group"><label for="broadJump">Standing Broad Jump (cm)</label><input type="number" id="broadJump"></div>
+            <div class="input-group"><label for="medBallThrow">Medicine Ball Throw (cm)</label><input type="number" id="medBallThrow"></div>
+            <h3>Cardio Endurance</h3>
+            <div class="input-group"><label for="run">12 min Cooper Run (miles)</label><input type="number" id="run"></div>
+            <h3>Muscular Endurance</h3>
+            <div class="input-group"><label for="pushups">Max Push Ups</label><input type="number" id="pushups"></div>
+            <div class="input-group"><label for="squats">Max Bodyweight Squats</label><input type="number" id="squats"></div>
+            <div class="input-group"><label for="rows">Max Inverted Rows</label><input type="number" id="rows"></div>
+            <h3>Coordination</h3>
+            <div class="input-group"><label for="wallToss">Wall-Toss Test</label><input type="number" id="wallToss"></div>
+            <div class="input-group"><label for="jumpRope">Max Jumping Rope (1 min)</label><input type="number" id="jumpRope"></div>
+            <h3>Balance</h3>
+            <div class="input-group"><label for="stance">Single-Leg Stance (eyes closed, sec)</label><input type="number" id="stance"></div>
+            <div class="input-group"><label for="hop">Single Leg Hop (cm)</label><input type="number" id="hop"></div>
+            <h3>Flexibility</h3>
+            <div class="input-group"><label for="sitReach">Modified Sit and Reach (cm)</label><input type="number" id="sitReach"></div>
+            <div class="input-group"><label for="backScratch">Back-Scratch Test (cm)</label><input type="number" id="backScratch"></div>
+            <button id="generateBtn" class="btn btn-generate">Generate Card</button>
+        </div>
+
+        <!-- CARD OUTPUT SECTION -->
+        <div class="output-section">
+            <h2>Your Card</h2>
+            <svg id="gymCard" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 452.16 777.44">
+                <defs>
+                    <style>.cls-1{fill:url(#linear-gradient);}.cls-2{fill:url(#linear-gradient-2);}.cls-3,.cls-5{fill:none;}.cls-3{stroke:#1d1d1b;}.cls-3,.cls-5,.cls-7{stroke-miterlimit:10;}.cls-4{fill:url(#linear-gradient-3);}.cls-5,.cls-7{stroke:#3c3c3b;}.cls-6{fill:#3c3c3b;}.cls-7{fill:#1d1d1b;}.cls-8{fill:#006750;}.cls-9{fill:#fff;}</style>
+                    <linearGradient id="linear-gradient" x1="226.08" y1="391.3" x2="226.08" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#be9380"/><stop offset="1" stop-color="#fbd7b6"/></linearGradient>
+                    <linearGradient id="linear-gradient-2" x1="226.08" y1="711.21" x2="226.08" y2="453.75" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c09582"/><stop offset="0.24" stop-color="#caa18c"/><stop offset="0.67" stop-color="#e5bfa5"/><stop offset="1" stop-color="#fddbbc"/></linearGradient>
+                    <linearGradient id="linear-gradient-3" x1="225.76" y1="372.33" x2="225.76" y2="96.26" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fcdabb"/><stop offset="1" stop-color="#fddbbc"/></linearGradient>
+                </defs>
+                <g id="Layer_2" data-name="Layer 2">
+                    <g id="Layer_3" data-name="Layer 3">
+                        <!-- Static Background Elements -->
+                        <path class="cls-1" d="M452.16,95.43q-.6,147.93-1.22,295.87H1.13Q.56,243.37,0,95.46A59.39,59.39,0,0,0,37.72,79.19c17.05-16.5,17.7-37.48,17.75-41.47a404.75,404.75,0,0,1,341.22,0,59.31,59.31,0,0,0,15.7,39.37C428.09,93.85,448.08,95.24,452.16,95.43Z"/>
+                        <path class="cls-2" d="M451,391.3q-.56,136.68-1.12,273.34a30.42,30.42,0,0,1-28,30.51A559,559,0,0,0,226,777.44a561.22,561.22,0,0,0-95.36-51.06,561,561,0,0,0-100.43-31.2C28.42,695,15,693.8,7.14,682.2a29.86,29.86,0,0,1-4.92-17.54Q1.71,528,1.17,391.3Z"/>
+                        <line class="cls-3" x1="68.08" y1="460.57" x2="383.92" y2="460.57"/>
+                        <path class="cls-4" d="M420,402.84c21.61-46.7,33.38-76.23,29.63-78.32-7.82-4.35-79,113.38-84.08,110.36-6.18-3.63,93.58-176.95,84.38-182.77-10.09-6.38-142.65,194.49-151.85,188.71-10.88-6.85,164-295.08,152.32-302.64-12.41-8-225.24,305.75-231.62,301.45C212.21,435.18,435.32,95.41,427,89.73c-8.69-6-262.9,362.67-276.87,353.46-14.31-9.43,235-407,224.42-413.81-10.76-6.93-280.8,401.68-289.52,396C76.86,420.06,307,53.33,300.48,49.17c-6.74-4.33-262.54,388.76-271,383.34-6.84-4.35,149.5-262.7,144.4-265.85-4.89-3-150.55,233.37-162.16,226.69-10.51-6.06,97.14-206.59,88.77-211.26-4.57-2.55-41.89,54.5-99.9,149.53q.2,47.47.41,94.94"/>
+                        <path class="cls-5" d="M192.77,696.69h69"/><line class="cls-5" x1="226.69" y1="480.12" x2="226.69" y2="675.39"/>
+                        <path class="cls-6" d="M245.73,722.54v11.75c0,1.25-.24,1.49-1.51,1.49h-2.64c-1.15,0-1.42-.27-1.42-1.41V710.79c0-1.13.28-1.4,1.42-1.41h2.81c1,0,1.33.3,1.33,1.33C245.73,714.65,245.73,718.6,245.73,722.54Z"/><path class="cls-6" d="M208.37,722.71V711c0-1.25.24-1.48,1.5-1.49h2.65c1.15,0,1.42.26,1.42,1.4v23.58c0,1.14-.28,1.41-1.42,1.41h-2.81c-1,0-1.33-.3-1.34-1.33Z"/><path class="cls-6" d="M239.44,719.5v5.13H214.69V719.5Z"/><path class="cls-6" d="M207.69,722.66v8.6c0,1-.26,1.3-1.33,1.3h-3.05c-.75,0-1.13-.33-1.13-1.09,0-5.87,0-11.74,0-17.61,0-.77.39-1.1,1.12-1.1,1.08,0,2.15,0,3.23,0,.88,0,1.16.32,1.16,1.23Z"/><path class="cls-6" d="M251.91,722.59c0,2.84,0,5.68,0,8.52,0,1.16-.23,1.38-1.41,1.39-1,0-1.93,0-2.89,0s-1.2-.29-1.2-1.19V713.86c0-.85.29-1.15,1.12-1.17,1.05,0,2.1,0,3.14,0s1.24.28,1.24,1.23C251.92,716.81,251.91,719.7,251.91,722.59Z"/><path class="cls-6" d="M255.52,720v5.17h-3.21V720Z"/><path class="cls-6" d="M201.8,725.41h-3.22v-5.18h3.22Z"/>
+                        <line class="cls-7" x1="73.88" y1="212.74" x2="121.51" y2="212.74"/><line class="cls-7" x1="72.78" y1="282.23" x2="120.4" y2="282.23"/>
+                        <image width="250" height="167" transform="translate(63.45 229.66) scale(0.26)" href="data:image/png;base64,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"/>
+                        <circle class="cls-8" cx="96.43" cy="327.19" r="33.19"/>
+                        <polygon class="cls-9" points="75.27 307.81 85.03 336.96 90.3 336.96 96.46 319.47 102.52 336.96 108.24 336.96 118.11 307.81 111.27 307.81 105.1 326.64 98.82 307.81 94.33 307.81 88.17 326.87 82.11 307.81 75.27 307.81"/>
+                        <path class="cls-9" d="M112.8,341.9a20.75,20.75,0,0,0-7.63-1.43,35.77,35.77,0,0,0-7.77.91c-8.17,1.45-9.42,2.07-13.38,2.46a47.46,47.46,0,0,1-8.38.07,21.35,21.35,0,0,0,4.87,1.94,24.81,24.81,0,0,0,7.7.68,48.19,48.19,0,0,0,6.72-1c9.21-1.63,10.6-1.94,13.23-1.95a33.88,33.88,0,0,1,6.43.6c1.26.25,2.3.52,3.07.75A17.7,17.7,0,0,0,112.8,341.9Zm-8.3.6c-1.86.14-2.51.36-9.12,1.64a70,70,0,0,1-7,1.19,31.91,31.91,0,0,1-7.92-.37,42.73,42.73,0,0,0,6.88-.38c3-.4,3.87-.85,8.3-1.72a47.72,47.72,0,0,1,8.14-1.19,28.05,28.05,0,0,1,8.67,1.19A31.6,31.6,0,0,0,104.5,342.5Z"/>
+                        <line class="cls-5" x1="67.85" y1="62.45" x2="383.69" y2="62.45"/>
+                    </g>
+                </g>
+
+                <!-- Dynamic, adjustable elements -->
+                <g id="group-portrait" transform="translate(172.64, 76.48)">
+                    <rect id="portrait-placeholder" x="0" y="0" width="214.63" height="286.17" fill="rgba(0,0,0,0.1)"/>
+                    <image id="portrait-image" x="0" y="0" width="214.63" height="286.17" preserveAspectRatio="xMidYMid slice" />
+                </g>
+                <g id="group-date" transform="translate(226.08, 53.45)">
+                    <text id="text-date" x="0" y="0" font-family="Oswald, sans-serif" font-size="29px" fill="#616160" text-anchor="middle">DD/MM/YYYY</text>
+                </g>
+                <g id="group-overall-and-gender" transform="translate(57, 145)">
+                    <text id="text-overall" x="0" y="0" font-family="Oswald, sans-serif" font-size="80px" fill="#3c3c3b">00</text>
+                    <text id="text-gender" x="25.62" y="55.81" font-family="Oswald, sans-serif" font-size="48.47px" fill="#3c3c3b">G</text>
+                </g>
+                <g id="group-surname" transform="translate(226.08, 445)">
+                    <text id="text-surname" x="0" y="0" font-family="Oswald, sans-serif" font-size="45px" fill="#3c3c3b" text-anchor="middle">SURNAME</text>
+                </g>
+                <g id="group-left-stats" transform="translate(65, 516.65)">
+                    <text id="text-crd-score" x="0" y="0" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
+                    <text id="text-crd-label" x="50" y="0" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">CRD</text>
+
+                    <text id="text-str-score" x="0" y="51.54" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
+                    <text id="text-str-label" x="50" y="51.54" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">STR</text>
+
+                    <text id="text-pac-score" x="0" y="103.06" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
+                    <text id="text-pac-label" x="50" y="103.06" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">PAC</text>
+
+                    <text id="text-mue-score" x="0" y="157.91" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
+                    <text id="text-mue-label" x="50" y="157.91" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">MUE</text>
+                </g>
+                <g id="group-right-stats" transform="translate(270, 516.65)">
+                    <text id="text-pow-score" x="0" y="0" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
+                    <text id="text-pow-label" x="50" y="0" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">POW</text>
+
+                    <text id="text-cor-score" x="0" y="50.49" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
+                    <text id="text-cor-label" x="50" y="50.49" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">COR</text>
+
+                    <text id="text-bal-score" x="0" y="102.83" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
+                    <text id="text-bal-label" x="50" y="102.83" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">BAL</text>
+
+                    <text id="text-flx-score" x="0" y="157.68" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
+                    <text id="text-flx-label" x="50" y="157.68" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">FLX</text>
+                </g>
+            </svg>
+
+            <button id="downloadBtn" class="btn btn-download">Download Card as PNG</button>
+        </div>
+    </div>
+
+    <script>
+        // ===================================
+        //      FITNESS STANDARDS DATA
+        // ===================================
+        const standards = {
+            male: {
+                dash: { mean: 9.0, sd: 0.7, higherIsBetter: false }, tTest: { mean: 11.20, sd: 0.80, higherIsBetter: false },
+                bench: { mean: 1.1347, sd: 0.2758, higherIsBetter: true }, legPress: { mean: 1.9015, sd: 0.2917, higherIsBetter: true },
+                broadJump: { mean: 218, sd: 25, higherIsBetter: true }, medBallThrow: { mean: 506, sd: 127, higherIsBetter: true },
+                run: { mean: 1.53, sd: 0.20, higherIsBetter: true }, pushups: { mean: 45.40, sd: 30.84, higherIsBetter: true },
+                squats: { mean: 72.80, sd: 56.67, higherIsBetter: true }, rows: { mean: 22.80, sd: 17.15, higherIsBetter: true },
+                wallToss: { mean: 27.50, sd: 8.99, higherIsBetter: true }, jumpRope: { mean: 76.51, sd: 46.87, higherIsBetter: true },
+                stance: { mean: 10.2, sd: 70.55, higherIsBetter: true }, hop: { mean: 181, sd: 20, higherIsBetter: true },
+                sitReach: { mean: 20.8, sd: 11.0, higherIsBetter: true }, backScratch: { mean: -0.2, sd: 8.9, higherIsBetter: true },
+            },
+            female: {
+                dash: { mean: 7.4, sd: 0.5, higherIsBetter: false }, tTest: { mean: 13.55, sd: 1.33, higherIsBetter: false },
+                bench: { mean: 0.6438, sd: 0.1240, higherIsBetter: true }, legPress: { mean: 1.4452, sd: 0.2740, higherIsBetter: true },
+                broadJump: { mean: 165, sd: 22, higherIsBetter: true }, medBallThrow: { mean: 466, sd: 119, higherIsBetter: true },
+                run: { mean: 1.3690, sd: 0.1874, higherIsBetter: true }, pushups: { mean: 23.20, sd: 18.09, higherIsBetter: true },
+                squats: { mean: 51.60, sd: 41.99, higherIsBetter: true }, rows: { mean: 16.80, sd: 13.96, higherIsBetter: true },
+                wallToss: { mean: 27.50, sd: 8.99, higherIsBetter: true }, jumpRope: { mean: 70.81, sd: 44.09, higherIsBetter: true },
+                stance: { mean: 8.5, sd: 60.36, higherIsBetter: true }, hop: { mean: 129, sd: 18, higherIsBetter: true },
+                sitReach: { mean: 24.4, sd: 14.8, higherIsBetter: true }, backScratch: { mean: 1.1, sd: 7.8, higherIsBetter: true },
+            }
+        };
+
+        const dom = {
+            generateBtn: document.getElementById('generateBtn'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            portraitInput: document.getElementById('portrait'),
+            name: document.getElementById('name'),
+            gender: document.getElementById('gender'),
+            bodyweight: document.getElementById('bodyweight'),
+            getScores: () => ({
+                dash: parseFloat(document.getElementById('dash').value), tTest: parseFloat(document.getElementById('tTest').value),
+                benchRaw: parseFloat(document.getElementById('benchRaw').value), legPressRaw: parseFloat(document.getElementById('legPressRaw').value),
+                broadJump: parseFloat(document.getElementById('broadJump').value), medBallThrow: parseFloat(document.getElementById('medBallThrow').value),
+                run: parseFloat(document.getElementById('run').value), pushups: parseFloat(document.getElementById('pushups').value),
+                squats: parseFloat(document.getElementById('squats').value), rows: parseFloat(document.getElementById('rows').value),
+                wallToss: parseFloat(document.getElementById('wallToss').value), jumpRope: parseFloat(document.getElementById('jumpRope').value),
+                stance: parseFloat(document.getElementById('stance').value), hop: parseFloat(document.getElementById('hop').value),
+                sitReach: parseFloat(document.getElementById('sitReach').value), backScratch: parseFloat(document.getElementById('backScratch').value),
+            })
+        };
+        let loadedPortraitImage = null;
+
+        // ===================================
+        //      SCORING LOGIC
+        // ===================================
+        function erf(x) {
+            const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+            const sign = (x >= 0) ? 1 : -1; x = Math.abs(x); const t = 1.0 / (1.0 + p * x);
+            const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+            return sign * y;
+        }
+        function zScoreToPercentile(z) { return 0.5 * (1 + erf(z / Math.sqrt(2))); }
+        function calculateScore(value, standard) {
+            if (isNaN(value) || value === null) return 30;
+            let zScore = (value - standard.mean) / standard.sd;
+            if (!standard.higherIsBetter) zScore = -zScore;
+            zScore = Math.max(-3, Math.min(3, zScore));
+            const percentile = zScoreToPercentile(zScore);
+            return Math.round(1 + percentile * 98);
+        }
+        
+        // ===================================
+        //      SVG UPDATE LOGIC
+        // ===================================
+        function updateCard(cardData) {
+            const setText = (id, text) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = text;
+            };
+
+            setText('text-date', cardData.date);
+            setText('text-overall', cardData.overall);
+            setText('text-gender', cardData.gender.toUpperCase());
+            setText('text-surname', cardData.name.toUpperCase() || 'SURNAME');
+            
+            setText('text-crd-score', cardData.crd);
+            setText('text-str-score', cardData.str);
+            setText('text-pac-score', cardData.pac);
+            setText('text-mue-score', cardData.mue);
+            setText('text-pow-score', cardData.pow);
+            setText('text-cor-score', cardData.cor);
+            setText('text-bal-score', cardData.bal);
+            setText('text-flx-score', cardData.flx);
+            
+            const imageElement = document.getElementById('portrait-image');
+            const placeholder = document.getElementById('portrait-placeholder');
+            if (imageElement && cardData.portraitImageSrc) {
+                imageElement.setAttribute('href', cardData.portraitImageSrc);
+                imageElement.setAttribute('xlink:href', cardData.portraitImageSrc);
+                placeholder.style.display = 'none';
+            } else {
+                 placeholder.style.display = 'block';
+            }
+        }
+
+        // ===================================
+        //      MAIN FUNCTION
+        // ===================================
+        function generateAndUpdateCard(isInitial = false) {
+            const gender = dom.gender.value;
+            const genderStandards = standards[gender];
+            const scores = dom.getScores();
+            const bodyweight = parseFloat(dom.bodyweight.value);
+
+            let benchXBodyweight = NaN;
+            let legPressXBodyweight = NaN;
+            if (bodyweight > 0) {
+                if (!isNaN(scores.benchRaw)) benchXBodyweight = scores.benchRaw / bodyweight;
+                if (!isNaN(scores.legPressRaw)) legPressXBodyweight = scores.legPressRaw / bodyweight;
+            }
+
+            const getAverage = (arr) => {
+                const validScores = arr.filter(score => !isNaN(score));
+                if (validScores.length === 0) return 30;
+                return Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length);
+            };
+            
+            const categoryScores = {
+                pac: getAverage([calculateScore(scores.dash, genderStandards.dash), calculateScore(scores.tTest, genderStandards.tTest)]),
+                str: getAverage([calculateScore(benchXBodyweight, genderStandards.bench), calculateScore(legPressXBodyweight, genderStandards.legPress)]),
+                pow: getAverage([calculateScore(scores.broadJump, genderStandards.broadJump), calculateScore(scores.medBallThrow, genderStandards.medBallThrow)]),
+                crd: getAverage([calculateScore(scores.run, genderStandards.run)]),
+                mue: getAverage([calculateScore(scores.pushups, genderStandards.pushups), calculateScore(scores.squats, genderStandards.squats), calculateScore(scores.rows, genderStandards.rows)]),
+                cor: getAverage([calculateScore(scores.wallToss, genderStandards.wallToss), calculateScore(scores.jumpRope, genderStandards.jumpRope)]),
+                bal: getAverage([calculateScore(scores.stance, genderStandards.stance), calculateScore(scores.hop, genderStandards.hop)]),
+                flx: getAverage([calculateScore(scores.sitReach, genderStandards.sitReach), calculateScore(scores.backScratch, genderStandards.backScratch)])
+            };
+            
+            const weights = { pac: 0.15, str: 0.18, pow: 0.12, crd: 0.20, mue: 0.15, cor: 0.05, bal: 0.07, flx: 0.08 };
+            const weightedOverall = Object.keys(weights).reduce((sum, key) => sum + categoryScores[key] * weights[key], 0);
+            
+            const today = new Date();
+            const cardData = {
+                ...categoryScores,
+                name: dom.name.value,
+                gender: gender.substring(0, 1),
+                overall: isInitial ? "00" : Math.round(weightedOverall),
+                date: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`,
+                portraitImageSrc: loadedPortraitImage ? loadedPortraitImage.src : ''
+            };
+            
+            updateCard(cardData);
+            if (!isInitial) dom.downloadBtn.style.display = 'block';
+        }
+
+        // ===================================
+        //      EVENT LISTENERS
+        // ===================================
+        dom.generateBtn.addEventListener('click', () => generateAndUpdateCard(false));
+
+        dom.portraitInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadedPortraitImage = img;
+                        generateAndUpdateCard(false);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        dom.downloadBtn.addEventListener('click', () => {
+            const svgElement = document.getElementById('gymCard');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const loader = new Image();
+
+            loader.onload = () => {
+                // For higher resolution, use a scaling factor
+                const scale = 2;
+                const svgSize = svgElement.viewBox.baseVal;
+                canvas.width = svgSize.width * scale;
+                canvas.height = svgSize.height * scale;
+
+                // Draw the loaded image (rendered SVG) onto the canvas
+                ctx.drawImage(loader, 0, 0, canvas.width, canvas.height);
+
+                // Create a download link for the canvas content (PNG)
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                const filename = (dom.name.value || 'gym-card').toLowerCase().replace(/\s+/g, '-');
+                link.download = `${filename}.png`;
+                
+                // Trigger the download and clean up
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            // Serialize the SVG and create a data URL
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            // Use btoa for binary-to-ASCII encoding, which is required for data URLs.
+            // The unescape(encodeURIComponent()) handles special characters and UTF-8 correctly.
+            const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+            
+            // Set the loader's source to the SVG data URL to trigger the rendering
+            loader.src = svgUrl;
+        });
+        
+        window.addEventListener('load', () => {
+            generateAndUpdateCard(true);
+            dom.downloadBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
