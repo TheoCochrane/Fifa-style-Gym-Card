@@ -5,21 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Functional Gym Card Generator</title>
 
-    <!-- Google Font import has been removed. -->
-
     <style>
-        /* ADDED: @font-face rule to load fonts from the local 'fonts' folder */
+        /* This rule loads the font for the LIVE WEBPAGE using a relative path */
         @font-face {
             font-family: 'Oswald';
-            src: url('./fonts/Oswald-Regular.ttf') format('truetype');
-            font-weight: 400; /* Corresponds to 'normal' weight */
+            src: url('https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Regular.ttf') format('truetype');
+            font-weight: 400;
             font-style: normal;
         }
-
         @font-face {
             font-family: 'Oswald';
-            src: url('./fonts/Oswald-Bold.ttf') format('truetype');
-            font-weight: 700; /* Corresponds to 'bold' weight */
+            src: url('https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Bold.ttf') format('truetype');
+            font-weight: 700;
             font-style: normal;
         }
 
@@ -172,7 +169,7 @@
                     </g>
                 </g>
 
-                <!-- Dynamic, adjustable elements -->
+                <!-- Dynamic elements that will be updated by JavaScript -->
                 <g id="group-portrait" transform="translate(172.64, 76.48)">
                     <rect id="portrait-placeholder" x="0" y="0" width="214.63" height="286.17" fill="rgba(0,0,0,0.1)"/>
                     <image id="portrait-image" x="0" y="0" width="214.63" height="286.17" preserveAspectRatio="xMidYMid slice" />
@@ -190,31 +187,25 @@
                 <g id="group-left-stats" transform="translate(65, 516.65)">
                     <text id="text-crd-score" x="0" y="0" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
                     <text id="text-crd-label" x="50" y="0" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">CRD</text>
-
                     <text id="text-str-score" x="0" y="51.54" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
                     <text id="text-str-label" x="50" y="51.54" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">STR</text>
-
                     <text id="text-pac-score" x="0" y="103.06" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
                     <text id="text-pac-label" x="50" y="103.06" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">PAC</text>
-
                     <text id="text-mue-score" x="0" y="157.91" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
                     <text id="text-mue-label" x="50" y="157.91" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">MUE</text>
                 </g>
                 <g id="group-right-stats" transform="translate(270, 516.65)">
                     <text id="text-pow-score" x="0" y="0" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
                     <text id="text-pow-label" x="50" y="0" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">POW</text>
-
                     <text id="text-cor-score" x="0" y="50.49" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
                     <text id="text-cor-label" x="50" y="50.49" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">COR</text>
-
                     <text id="text-bal-score" x="0" y="102.83" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
                     <text id="text-bal-label" x="50" y="102.83" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">BAL</text>
-
                     <text id="text-flx-score" x="0" y="157.68" font-family="Oswald, sans-serif" font-size="40px" fill="#3c3c3b">00</text>
                     <text id="text-flx-label" x="50" y="157.68" font-family="Oswald, sans-serif" font-size="40px" fill="#575756">FLX</text>
                 </g>
             </svg>
-
+            
             <button id="downloadBtn" class="btn btn-download">Download Card as PNG</button>
         </div>
     </div>
@@ -390,41 +381,63 @@
             }
         });
 
+        // =========================================================================
+        // === THIS IS THE UPDATED DOWNLOAD FUNCTION. CHANGE THE PLACEHOLDER URLS! ===
+        // =========================================================================
         dom.downloadBtn.addEventListener('click', () => {
+            // 1. Define the font styles using the ABSOLUTE URLs to your live font files.
+            //    REPLACE these two placeholder URLs with the real URLs from your GitHub Pages site.
+            const fontStyles = `
+                <style>
+                    @font-face {
+                        font-family: 'Oswald';
+                        src: url('https://YOUR-USERNAME.github.io/YOUR-REPO/fonts/Oswald-Regular.ttf') format('truetype');
+                        font-weight: 400;
+                        font-style: normal;
+                    }
+                    @font-face {
+                        font-family: 'Oswald';
+                        src: url('https://YOUR-USERNAME.github.io/YOUR-REPO/fonts/Oswald-Bold.ttf') format('truetype');
+                        font-weight: 700;
+                        font-style: normal;
+                    }
+                </style>
+            `;
+
             const svgElement = document.getElementById('gymCard');
+            const defs = svgElement.querySelector('defs');
+            
+            // 2. Temporarily inject the font styles into the SVG's <defs> section.
+            defs.insertAdjacentHTML('beforeend', fontStyles);
+
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const loader = new Image();
 
             loader.onload = () => {
-                // For higher resolution, use a scaling factor
-                const scale = 2;
+                const scale = 2; // For higher resolution
                 const svgSize = svgElement.viewBox.baseVal;
                 canvas.width = svgSize.width * scale;
                 canvas.height = svgSize.height * scale;
-
-                // Draw the loaded image (rendered SVG) onto the canvas
                 ctx.drawImage(loader, 0, 0, canvas.width, canvas.height);
 
-                // Create a download link for the canvas content (PNG)
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL('image/png');
                 const filename = (dom.name.value || 'gym-card').toLowerCase().replace(/\s+/g, '-');
                 link.download = `${filename}.png`;
                 
-                // Trigger the download and clean up
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+
+                // 4. IMPORTANT: Remove the injected styles after the download is done to keep the DOM clean.
+                defs.querySelector('style:last-child').remove();
             };
 
-            // Serialize the SVG and create a data URL
+            // Serialize the SVG (which now includes the absolute paths to the font)
             const svgData = new XMLSerializer().serializeToString(svgElement);
-            // Use btoa for binary-to-ASCII encoding, which is required for data URLs.
-            // The unescape(encodeURIComponent()) handles special characters and UTF-8 correctly.
             const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
             
-            // Set the loader's source to the SVG data URL to trigger the rendering
             loader.src = svgUrl;
         });
         
