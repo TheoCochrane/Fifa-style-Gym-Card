@@ -9,13 +9,13 @@
         /* This rule loads the font for the LIVE WEBPAGE using a relative path */
         @font-face {
             font-family: 'Oswald';
-            src: url('https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Regular.ttf') format('truetype');
+            src: url('./fonts/Oswald-Regular.ttf') format('truetype');
             font-weight: 400;
             font-style: normal;
         }
         @font-face {
             font-family: 'Oswald';
-            src: url('https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Bold.ttf') format('truetype');
+            src: url('./fonts/Oswald-Bold.ttf') format('truetype');
             font-weight: 700;
             font-style: normal;
         }
@@ -382,22 +382,21 @@
         });
 
         // =========================================================================
-        // === THIS IS THE UPDATED DOWNLOAD FUNCTION. CHANGE THE PLACEHOLDER URLS! ===
+        // === THIS IS THE CORRECTED DOWNLOAD FUNCTION WITH YOUR LIVE URLS        ===
         // =========================================================================
         dom.downloadBtn.addEventListener('click', () => {
             // 1. Define the font styles using the ABSOLUTE URLs to your live font files.
-            //    REPLACE these two placeholder URLs with the real URLs from your GitHub Pages site.
             const fontStyles = `
                 <style>
                     @font-face {
                         font-family: 'Oswald';
-                        src: url('https://YOUR-USERNAME.github.io/YOUR-REPO/fonts/Oswald-Regular.ttf') format('truetype');
+                        src: url('https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Regular.ttf') format('truetype');
                         font-weight: 400;
                         font-style: normal;
                     }
                     @font-face {
                         font-family: 'Oswald';
-                        src: url('https://YOUR-USERNAME.github.io/YOUR-REPO/fonts/Oswald-Bold.ttf') format('truetype');
+                        src: url('https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Bold.ttf') format('truetype');
                         font-weight: 700;
                         font-style: normal;
                     }
