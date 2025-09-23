@@ -268,7 +268,7 @@
         }
         function zScoreToPercentile(z) { return 0.5 * (1 + erf(z / Math.sqrt(2))); }
         function calculateScore(value, standard) {
-            if (isNaN(value) || value === null) return 30;
+            if (isNaN(value) || value === null) return NaN; // <-- CHANGE THIS LINE
             let zScore = (value - standard.mean) / standard.sd;
             if (!standard.higherIsBetter) zScore = -zScore;
             zScore = Math.max(-3, Math.min(3, zScore));
