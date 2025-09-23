@@ -370,12 +370,23 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
+                    // Store the image data for when the "Generate" button is actually clicked
                     const img = new Image();
                     img.onload = () => {
                         loadedPortraitImage = img;
-                        generateAndUpdateCard(false);
                     };
                     img.src = e.target.result;
+
+                    // --- NEW LOGIC ---
+                    // Directly update just the image on the card preview
+                    const imageElement = document.getElementById('portrait-image');
+                    const placeholder = document.getElementById('portrait-placeholder');
+                    
+                    if (imageElement) {
+                        imageElement.setAttribute('href', e.target.result);
+                        imageElement.setAttribute('xlink:href', e.target.result);
+                        placeholder.style.display = 'none'; // Hide the grey placeholder
+                    }
                 };
                 reader.readAsDataURL(file);
             }
