@@ -327,7 +327,7 @@
             }
 
             const getAverage = (arr) => {
-                const validScores = arr.filter(score => !isNaN(score));
+                const validScores = arr.filter(score => score !== "" && !isNaN(score));
                 if (validScores.length === 0) return "";
                 return Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length);
             };
