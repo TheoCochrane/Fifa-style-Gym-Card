@@ -268,7 +268,7 @@
         }
         function zScoreToPercentile(z) { return 0.5 * (1 + erf(z / Math.sqrt(2))); }
         function calculateScore(value, standard) {
-            if (isNaN(value) || value === null) return "--";
+            if (isNaN(value) || value === null) return "";
             let zScore = (value - standard.mean) / standard.sd;
             if (!standard.higherIsBetter) zScore = -zScore;
             zScore = Math.max(-3, Math.min(3, zScore));
@@ -288,7 +288,7 @@
             setText('text-date', cardData.date);
             setText('text-overall', cardData.overall);
             setText('text-gender', cardData.gender.toUpperCase());
-            setText('text-surname', cardData.name.toUpperCase() || '--------');
+            setText('text-surname', cardData.name.toUpperCase() || '');
             
             setText('text-crd-score', cardData.crd);
             setText('text-str-score', cardData.str);
@@ -328,7 +328,7 @@
 
             const getAverage = (arr) => {
                 const validScores = arr.filter(score => !isNaN(score));
-                if (validScores.length === 0) return "--";
+                if (validScores.length === 0) return "";
                 return Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length);
             };
             
@@ -350,8 +350,8 @@
             const cardData = {
                 ...categoryScores,
                 name: dom.name.value,
-                gender: isInitial ? "-" : gender.substring(0, 1),
-                overall: isInitial ? "--" : Math.round(weightedOverall),
+                gender: isInitial ? "" : gender.substring(0, 1),
+                overall: isInitial ? "" : Math.round(weightedOverall),
                 date: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`,
                 portraitImageSrc: loadedPortraitImage ? loadedPortraitImage.src : ''
             };
