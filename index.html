@@ -419,65 +419,101 @@
         // =========================================================================
         // === THIS IS THE CORRECTED DOWNLOAD FUNCTION WITH YOUR LIVE URLS        ===
         // =========================================================================
-        dom.downloadBtn.addEventListener('click', () => {
-            // 1. Define the font styles using the ABSOLUTE URLs to your live font files.
-            const fontStyles = `
-                <style>
-                    @font-face {
-                        font-family: 'Oswald';
-                        src: url('https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Regular.ttf') format('truetype');
-                        font-weight: 400;
-                        font-style: normal;
-                    }
-                    @font-face {
-                        font-family: 'Oswald';
-                        src: url('https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Bold.ttf') format('truetype');
-                        font-weight: 700;
-                        font-style: normal;
-                    }
-                </style>
-            `;
-
-            const svgElement = document.getElementById('gymCard');
-            const defs = svgElement.querySelector('defs');
-            
-            // 2. Temporarily inject the font styles into the SVG's <defs> section.
-            defs.insertAdjacentHTML('beforeend', fontStyles);
-
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const loader = new Image();
-
-            loader.onload = () => {
-                const scale = 2; // For higher resolution
-                const svgSize = svgElement.viewBox.baseVal;
-                canvas.width = svgSize.width * scale;
-                canvas.height = svgSize.height * scale;
-                ctx.drawImage(loader, 0, 0, canvas.width, canvas.height);
-
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                const filename = (dom.name.value || 'gym-card').toLowerCase().replace(/\s+/g, '-');
-                link.download = `${filename}.png`;
-                
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-                // 4. IMPORTANT: Remove the injected styles after the download is done to keep the DOM clean.
-                defs.querySelector('style:last-child').remove();
+                // =========================================================================
+        // === THIS IS THE FINAL, CORRECTED DOWNLOAD FUNCTION WITH EMBEDDED FONTS ===
+        // =========================================================================
+        dom.downloadBtn.addEventListener('click', async () => {
+            // This helper function fetches a font file and converts it to a Base64 data URL
+            const fetchFontAsBase64 = (url) => {
+                return fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(blob);
+                    }));
             };
 
-            // Serialize the SVG (which now includes the absolute paths to the font)
-            const svgData = new XMLSerializer().serializeToString(svgElement);
-            const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
-            
-            loader.src = svgUrl;
-        });
-        
-        window.addEventListener('load', () => {
-            generateAndUpdateCard(true);
-            dom.downloadBtn.style.display = 'none';
+            try {
+                // 1. Define the URLs for your fonts
+                const oswaldRegularUrl = 'https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Regular.ttf';
+                const oswaldBoldUrl = 'https://theocochrane.github.io/Fifa-style-Gym-Card/fonts/Oswald-Bold.ttf';
+
+                // Optional: Show a loading indicator to the user
+                dom.downloadBtn.textContent = 'Preparing...';
+                dom.downloadBtn.disabled = true;
+
+                // 2. Fetch both fonts at the same time and wait for them to be converted
+                const [oswaldRegularBase64, oswaldBoldBase64] = await Promise.all([
+                    fetchFontAsBase64(oswaldRegularUrl),
+                    fetchFontAsBase64(oswaldBoldUrl)
+                ]);
+
+                // 3. Create the <style> block using the Base64 data.
+                //    This embeds the font directly into the SVG.
+                const fontStyles = `
+                    <style>
+                        @font-face {
+                            font-family: 'Oswald';
+                            src: url('${oswaldRegularBase64}') format('truetype');
+                            font-weight: 400;
+                            font-style: normal;
+                        }
+                        @font-face {
+                            font-family: 'Oswald';
+                            src: url('${oswaldBoldBase64}') format('truetype');
+                            font-weight: 700;
+                            font-style: normal;
+                        }
+                    </style>
+                `;
+
+                const svgElement = document.getElementById('gymCard');
+                const defs = svgElement.querySelector('defs');
+                
+                // 4. Temporarily inject the font styles into the SVG.
+                defs.insertAdjacentHTML('beforeend', fontStyles);
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const loader = new Image();
+
+                loader.onload = () => {
+                    // This part remains mostly the same
+                    const scale = 2; // For higher resolution
+                    const svgSize = svgElement.viewBox.baseVal;
+                    canvas.width = svgSize.width * scale;
+                    canvas.height = svgSize.height * scale;
+                    ctx.drawImage(loader, 0, 0, canvas.width, canvas.height);
+
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/png');
+                    const filename = (dom.name.value || 'gym-card').toLowerCase().replace(/\s+/g, '-');
+                    link.download = `${filename}.png`;
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    // 6. IMPORTANT: Remove the injected styles to keep the DOM clean.
+                    defs.querySelector('style:last-child').remove();
+                };
+
+                // 5. Serialize the SVG (which now contains the embedded font data).
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const svgUrl = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+                
+                loader.src = svgUrl;
+
+            } catch (error) {
+                console.error("Error preparing card for download:", error);
+                alert("Sorry, there was an error downloading the card. Please check your internet connection and try again.");
+            } finally {
+                // Optional: Reset the button text and state
+                dom.downloadBtn.textContent = 'Download Card as PNG';
+                dom.downloadBtn.disabled = false;
+            }
         });
     </script>
 </body>
