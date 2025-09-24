@@ -313,11 +313,18 @@
         // ===================================
         //      MAIN FUNCTION
         // ===================================
+                // ===================================
+        //      MAIN FUNCTION
+        // ===================================
         function generateAndUpdateCard(isInitial = false) {
             const gender = dom.gender.value;
             const genderStandards = standards[gender];
             const scores = dom.getScores();
             const bodyweight = parseFloat(dom.bodyweight.value);
+
+            // --- NEW ---
+            // This new line checks if every single exercise input has a value.
+            const allScoresFilled = !Object.values(scores).some(isNaN);
 
             let benchXBodyweight = NaN;
             let legPressXBodyweight = NaN;
@@ -326,9 +333,13 @@
                 if (!isNaN(scores.legPressRaw)) legPressXBodyweight = scores.legPressRaw / bodyweight;
             }
 
+            // --- MODIFIED ---
+            // This function is now stricter. It will only calculate a score
+            // if all the exercises for that category are filled in.
             const getAverage = (arr) => {
                 const validScores = arr.filter(score => score !== "" && !isNaN(score));
-                if (validScores.length === 0) return "";
+                // If the number of filled scores is less than required, return blank.
+                if (validScores.length < arr.length) return ""; 
                 return Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length);
             };
             
@@ -344,14 +355,16 @@
             };
             
             const weights = { pac: 0.15, str: 0.18, pow: 0.12, crd: 0.20, mue: 0.15, cor: 0.05, bal: 0.07, flx: 0.08 };
-            const weightedOverall = Object.keys(weights).reduce((sum, key) => sum + categoryScores[key] * weights[key], 0);
+            const weightedOverall = Object.keys(weights).reduce((sum, key) => sum + (categoryScores[key] || 0) * weights[key], 0);
             
             const today = new Date();
             const cardData = {
                 ...categoryScores,
                 name: dom.name.value,
                 gender: isInitial ? "" : gender.substring(0, 1),
-                overall: isInitial ? "" : Math.round(weightedOverall),
+                // --- MODIFIED ---
+                // This now uses the allScoresFilled check to decide if the overall score should be shown.
+                overall: (isInitial || !allScoresFilled) ? "" : Math.round(weightedOverall),
                 date: `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`,
                 portraitImageSrc: loadedPortraitImage ? loadedPortraitImage.src : ''
             };
