@@ -285,19 +285,30 @@
                 if (element) element.textContent = text;
             };
 
+            // --- NEW ---
+            // Helper function to format scores with a leading zero if they are one digit.
+            const formatScore = (score) => {
+                if (score === "" || isNaN(score)) {
+                    return ""; // If the score is blank, keep it blank
+                }
+                // Convert the score to a string and add a leading '0' if it's not 2 digits
+                return String(score).padStart(2, '0');
+            };
+
             setText('text-date', cardData.date);
-            setText('text-overall', cardData.overall);
+            // --- MODIFIED --- Apply the new formatting to all scores ---
+            setText('text-overall', formatScore(cardData.overall));
             setText('text-gender', cardData.gender.toUpperCase());
             setText('text-surname', cardData.name.toUpperCase() || '');
             
-            setText('text-crd-score', cardData.crd);
-            setText('text-str-score', cardData.str);
-            setText('text-pac-score', cardData.pac);
-            setText('text-mue-score', cardData.mue);
-            setText('text-pow-score', cardData.pow);
-            setText('text-cor-score', cardData.cor);
-            setText('text-bal-score', cardData.bal);
-            setText('text-flx-score', cardData.flx);
+            setText('text-crd-score', formatScore(cardData.crd));
+            setText('text-str-score', formatScore(cardData.str));
+            setText('text-pac-score', formatScore(cardData.pac));
+            setText('text-mue-score', formatScore(cardData.mue));
+            setText('text-pow-score', formatScore(cardData.pow));
+            setText('text-cor-score', formatScore(cardData.cor));
+            setText('text-bal-score', formatScore(cardData.bal));
+            setText('text-flx-score', formatScore(cardData.flx));
             
             const imageElement = document.getElementById('portrait-image');
             const placeholder = document.getElementById('portrait-placeholder');
