@@ -46,7 +46,36 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 450px;
-        }
+
+        .instructions-panel {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: left;
+            line-height: 1.6;
+            }
+            .instructions-panel h4 {
+                margin-top: 0;
+                margin-bottom: 10px;
+                color: #333;
+                font-weight: 700;
+            }
+            .instructions-panel ol, .instructions-panel ul {
+                padding-left: 20px;
+                margin-bottom: 0;
+            }
+            .instructions-panel ol {
+                margin-bottom: 15px;
+            }
+            .instructions-panel li {
+                margin-bottom: 8px;
+            }
+            .instructions-panel li:last-child {
+                margin-bottom: 0;
+            }
         h1, h2, h3 {
             text-align: center;
             color: #333;
@@ -102,7 +131,33 @@
     <div class="container">
         <!-- USER INPUT FORM SECTION -->
         <div class="form-section">
-            <h1>Gym Card Generator</h1>
+                        <h1>Gym Card Generator</h1>
+
+            <!-- ============================================= -->
+            <!-- === COPY AND PASTE THIS INSTRUCTION PANEL === -->
+            <div class="instructions-panel">
+                <h4>Welcome! How to create your card:</h4>
+                <ol>
+                    <li>
+                        <strong>Fill in Your Details:</strong> Your <strong>Gender</strong> and <strong>Bodyweight</strong> are required for accurate scores. You can also upload a portrait image!
+                    </li>
+                    <li>
+                        <strong>Enter Exercise Scores:</strong> You must fill in <strong>all</strong> exercise fields to calculate your final Overall Rating.
+                    </li>
+                    <li>
+                        <strong>Generate & Download:</strong> Click "Generate Card" to see your results, then use the download button to save it as a PNG.
+                    </li>
+                </ol>
+
+                <h4>Understanding Your Scores</h4>
+                <ul>
+                    <li>Your score (01-99) is a <strong>percentile rank</strong> based on norms for young adults. A score of 50 means you performed better than 50% of people in that group.</li>
+                    <li>These scores are a fun guide, not a perfect science! Use them to track your own progress or for a friendly competition with friends.</li>
+                    <li>The <strong>Overall Rating</strong> is a weighted average of all categories. Enjoy!</li>
+                </ul>
+            </div>
+            <!-- ============================================= -->
+
             <h3>Personal Details</h3>
             <div class="input-group"><label for="name">Surname</label><input type="text" id="name" placeholder="Enter your surname" required></div>
             <div class="input-group"><label for="gender">Gender</label><select id="gender"><option value="male">Male</option><option value="female">Female</option></select></div>
